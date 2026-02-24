@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microservices App - Social Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#667eea',
+            secondary: '#764ba2',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fade-in 0.3s ease-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-primary to-secondary">
+  <!-- Header -->
+  <header class="bg-white/95 shadow-lg mb-8 backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
+      <h1 class="text-3xl font-bold text-primary">🚀 Microservices Social Platform</h1>
+      <div class="flex gap-3">
+        <button id="create-user-btn" class="px-5 py-2 bg-primary text-white rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-semibold">
+          ➕ New User
+        </button>
+        <button id="create-post-btn" class="px-5 py-2 bg-secondary text-white rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-semibold">
+          ✍️ New Post
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 pb-8">
+    <!-- Users Section -->
+    <section class="bg-white rounded-xl p-8 mb-8 shadow-xl">
+      <h2 class="text-2xl font-bold mb-6 text-primary">👥 Users</h2>
+      <div id="users-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <div class="col-span-full text-center text-gray-400">Loading users...</div>
+      </div>
+    </section>
+
+    <!-- Posts Section -->
+    <section class="bg-white rounded-xl p-8 shadow-xl">
+      <h2 class="text-2xl font-bold mb-6 text-primary">📝 Posts & Comments</h2>
+      <div id="posts-list" class="flex flex-col gap-5">
+        <div class="text-center text-gray-400">Loading posts...</div>
+      </div>
+    </section>
+
+    <!-- Create User Modal -->
+    <div id="user-modal" class="modal hidden fixed inset-0 bg-black/50 z-50 items-center justify-center">
+      <div class="bg-white rounded-xl p-8 w-full max-w-md relative shadow-2xl">
+        <button class="close-modal absolute right-6 top-6 text-3xl text-gray-400 hover:text-gray-700 cursor-pointer">&times;</button>
+        <h2 class="text-2xl font-bold mb-6 text-primary">Create New User</h2>
+        <form id="user-form" class="flex flex-col gap-4">
+          <input type="text" id="user-name" placeholder="Full Name" required 
+                 class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+          <input type="email" id="user-email" placeholder="Email Address" required 
+                 class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+          <input type="password" id="user-password" placeholder="Password" required 
+                 class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+          <button type="submit" class="px-5 py-3 bg-primary text-white rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-semibold">
+            Create User
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Create Post Modal -->
+    <div id="post-modal" class="modal hidden fixed inset-0 bg-black/50 z-50 items-center justify-center">
+      <div class="bg-white rounded-xl p-8 w-full max-w-md relative shadow-2xl">
+        <button class="close-modal absolute right-6 top-6 text-3xl text-gray-400 hover:text-gray-700 cursor-pointer">&times;</button>
+        <h2 class="text-2xl font-bold mb-6 text-primary">Create New Post</h2>
+        <form id="post-form" class="flex flex-col gap-4">
+          <input type="text" id="post-title" placeholder="Post Title" required 
+                 class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+          <textarea id="post-content" placeholder="What's on your mind?" rows="4" required 
+                    class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none"></textarea>
+          <input type="text" id="post-userId" placeholder="Your User ID (or leave blank for anonymous)" 
+                 class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+          <p class="text-xs text-gray-500">💡 Tip: Copy a User ID from the Users section above</p>
+          <button type="submit" class="px-5 py-3 bg-secondary text-white rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-semibold">
+            Create Post
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Create Comment Modal -->
+    <div id="comment-modal" class="modal hidden fixed inset-0 bg-black/50 z-50 items-center justify-center">
+      <div class="bg-white rounded-xl p-8 w-full max-w-md relative shadow-2xl">
+        <button class="close-modal absolute right-6 top-6 text-3xl text-gray-400 hover:text-gray-700 cursor-pointer">&times;</button>
+        <h2 class="text-2xl font-bold mb-6 text-primary">Add Comment</h2>
+        <form id="comment-form" class="flex flex-col gap-4">
+          <input type="hidden" id="comment-postId">
+          <textarea id="comment-text" placeholder="Write your comment..." rows="3" required 
+                    class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none"></textarea>
+          <input type="text" id="comment-userId" placeholder="Your User ID (or leave blank for anonymous)" 
+                 class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+          <button type="submit" class="px-5 py-3 bg-primary text-white rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-semibold">
+            Post Comment
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
