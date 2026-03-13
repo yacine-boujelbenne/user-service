@@ -34,7 +34,7 @@ const connectDB = async () => {
     console.log('✅ MongoDB Post connected');
   } catch (err) {
     console.log('❌ MongoDB Post error:', err.message);
-    console.log('👉 TIP: Ensure your IP (196.203.130.3) is whitelisted in MongoDB Atlas.');
+    console.log('👉 TIP: Ensure your IP (197.240.87.202) is whitelisted in MongoDB Atlas.');
     setTimeout(connectDB, 10000);
   }
 };

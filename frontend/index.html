@@ -1,124 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Microservices App - Social Platform</title>
+  <title>SocialHub — Microservices Platform</title>
+  <meta name="description" content="A modern social platform built with microservices architecture">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
           colors: {
-            primary: '#667eea',
-            secondary: '#764ba2',
+            brand: { DEFAULT: 'var(--brand)', light: 'var(--brand-light)', dark: 'var(--brand-dark)' },
+            accent: { DEFAULT: 'var(--brand-light)', light: 'var(--brand-light)' },
+            surface: {
+              DEFAULT: 'var(--bg-surface)',
+              dark: 'var(--bg-main)',
+              hover: 'var(--bg-hover)',
+              input: 'var(--bg-input)'
+            },
+            border: 'var(--border)',
+            txt: {
+              primary: 'var(--text-primary)',
+              secondary: 'var(--text-secondary)',
+              muted: 'var(--text-muted)'
+            },
           }
         }
       }
     }
   </script>
   <style>
-    @keyframes fade-in {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    :root {
+      --bg-main: #F9F8F6;
+      --bg-surface: #FFFFFF;
+      --bg-hover: #EFE9E3;
+      --bg-input: #EFE9E3;
+      --border: #D9CFC7;
+      --text-primary: #44403C;
+      --text-secondary: #78716C;
+      --text-muted: #A8A29E;
+      --brand: #8B7355;
+      --brand-light: #C9B59C;
+      --brand-dark: #6D5A42;
     }
-    .animate-fade-in {
-      animation: fade-in 0.3s ease-out;
+
+    .dark {
+      --bg-main: #25343F;
+      --bg-surface: #2E3E4B;
+      --bg-hover: #374958;
+      --bg-input: #1E2A34;
+      --border: #3F5260;
+      --text-primary: #EAEFEF;
+      --text-secondary: #BFC9D1;
+      --text-muted: #8A9AA7;
+      --brand: #FF9B51;
+      --brand-light: #FFB380;
+      --brand-dark: #E68239;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(60px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideOutRight {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      to {
+        opacity: 0;
+        transform: translateX(60px);
+      }
+    }
+
+    .anim-slide-up {
+      animation: fadeSlideUp 0.35s ease-out;
+    }
+
+    .anim-fade {
+      animation: fadeSlideUp 0.4s ease-out;
+    }
+
+    .anim-notify {
+      animation: slideInRight 0.35s ease-out;
+    }
+
+    .anim-notify-out {
+      animation: slideOutRight 0.3s ease-in forwards;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+
+    #theme-toggle span {
+      transition: transform 0.3s ease-out;
+    }
+
+    #theme-toggle:hover span {
+      transform: rotate(12deg) scale(1.1);
     }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-primary to-secondary">
-  <!-- Header -->
-  <header class="bg-white/95 shadow-lg mb-8 backdrop-blur-sm">
-    <div class="max-w-7xl mx-auto px-4 py-5 flex justify-between items-center">
-      <h1 class="text-3xl font-bold text-primary">🚀 Microservices Social Platform</h1>
-      <div class="flex gap-3">
-        <button id="create-user-btn" class="px-5 py-2 bg-primary text-white rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-semibold">
-          ➕ New User
+
+<body class="min-h-screen bg-surface-dark text-txt-primary transition-colors duration-300">
+
+  <!-- ==================== AUTH SCREEN ==================== -->
+  <div id="auth-screen" class="min-h-screen flex items-center justify-center relative overflow-hidden bg-surface-dark">
+    <!-- Theme Toggle for Auth Screen -->
+    <button
+      class="theme-toggle-btn absolute top-6 right-8 z-[110] w-10 h-10 rounded-xl bg-surface/50 backdrop-blur border border-border text-txt-secondary flex items-center justify-center hover:bg-brand/20 hover:border-brand shadow-lg transition-all active:scale-95">
+      <span class="theme-icon-light hidden text-xl">☀️</span>
+      <span class="theme-icon-dark text-xl">🌙</span>
+    </button>
+    <!-- Decorative background -->
+    <div
+      class="absolute inset-0 bg-gradient-to-br from-brand/20 via-transparent to-brand-light/10 dark:from-brand/10 dark:to-transparent opacity-50">
+    </div>
+    <!-- Decorative blobs -->
+    <div class="absolute w-[600px] h-[600px] rounded-full -top-48 -right-48 pointer-events-none"
+      style="background: radial-gradient(circle, var(--brand) 0%, transparent 70%); opacity: 0.1;"></div>
+    <div class="absolute w-[500px] h-[500px] rounded-full -bottom-36 -left-36 pointer-events-none"
+      style="background: radial-gradient(circle, var(--brand-light) 0%, transparent 70%); opacity: 0.1;"></div>
+
+    <div class="w-full max-w-[420px] px-6 relative z-10">
+      <!-- Brand -->
+      <div class="text-center mb-10">
+        <img src="assets/LOGO.png" alt="SocialHub Logo"
+          class="w-[72px] h-[72px] rounded-2xl inline-block shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+        <h1 class="text-3xl font-extrabold bg-gradient-to-r from-brand-light to-brand bg-clip-text text-transparent">
+          SocialHub</h1>
+        <p class="text-txt-secondary text-sm mt-1">Connect. Share. Engage.</p>
+      </div>
+
+      <!-- Login Form -->
+      <div id="login-form-container"
+        class="bg-surface border border-border rounded-2xl p-8 shadow-[0_8px_40px_rgba(0,0,0,0.45)] anim-fade">
+        <h2 class="text-xl font-bold text-center mb-6">Welcome Back</h2>
+        <form id="login-form" class="flex flex-col gap-3.5">
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">📧</span>
+            <input type="email" id="login-email" placeholder="Email address" required
+              class="w-full pl-11 pr-4 py-3.5 bg-surface-input border border-border rounded-lg text-txt-primary text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 placeholder:text-txt-muted transition">
+          </div>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">🔒</span>
+            <input type="password" id="login-password" placeholder="Password" required
+              class="w-full pl-11 pr-4 py-3.5 bg-surface-input border border-border rounded-lg text-txt-primary text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 placeholder:text-txt-muted transition">
+          </div>
+          <button type="submit"
+            class="w-full py-3 bg-gradient-to-r from-brand to-brand-dark text-white rounded-lg font-semibold text-sm shadow-[0_4px_16px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(0,0,0,0.3)] active:translate-y-0 transition-all">
+            Sign In
+          </button>
+        </form>
+        <p class="text-center mt-5 text-[13px] text-txt-secondary">Don't have an account? <a href="#" id="show-register"
+            class="text-brand font-semibold hover:opacity-80 transition">Create one</a></p>
+      </div>
+
+      <!-- Register Form -->
+      <div id="register-form-container"
+        class="hidden bg-surface border border-border rounded-2xl p-8 shadow-[0_8px_40px_rgba(0,0,0,0.45)] anim-fade">
+        <h2 class="text-xl font-bold text-center mb-6">Create Account</h2>
+        <form id="register-form" class="flex flex-col gap-3.5">
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">👤</span>
+            <input type="text" id="register-name" placeholder="Full name" required
+              class="w-full pl-11 pr-4 py-3.5 bg-surface-input border border-border rounded-lg text-txt-primary text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 placeholder:text-txt-muted transition">
+          </div>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">📧</span>
+            <input type="email" id="register-email" placeholder="Email address" required
+              class="w-full pl-11 pr-4 py-3.5 bg-surface-input border border-border rounded-lg text-txt-primary text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 placeholder:text-txt-muted transition">
+          </div>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">🔒</span>
+            <input type="password" id="register-password" placeholder="Password" required minlength="4"
+              class="w-full pl-11 pr-4 py-3.5 bg-surface-input border border-border rounded-lg text-txt-primary text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 placeholder:text-txt-muted transition">
+          </div>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-base pointer-events-none">🔒</span>
+            <input type="password" id="register-confirm-password" placeholder="Confirm password" required minlength="4"
+              class="w-full pl-11 pr-4 py-3.5 bg-surface-input border border-border rounded-lg text-txt-primary text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 placeholder:text-txt-muted transition">
+          </div>
+          <button type="submit"
+            class="w-full py-3 bg-gradient-to-r from-brand to-brand-dark text-white rounded-lg font-semibold text-sm shadow-[0_4px_16px_rgba(108,92,231,0.3)] hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(108,92,231,0.45)] active:translate-y-0 transition-all">
+            Create Account
+          </button>
+        </form>
+        <p class="text-center mt-5 text-[13px] text-txt-secondary">Already have an account? <a href="#" id="show-login"
+            class="text-brand-light font-semibold hover:text-accent transition">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-screen" class="hidden">
+    <!-- Top Nav -->
+    <header
+      class="sticky top-0 z-50 flex items-center justify-between px-8 h-16 bg-surface-dark/85 backdrop-blur-xl border-b border-border">
+      <div class="flex items-center gap-3">
+        <img src="assets/LOGO.png" alt="SocialHub Logo" class="w-9 h-9 rounded-lg">
+        <h1 class="text-xl font-bold bg-gradient-to-r from-brand-light to-brand bg-clip-text text-transparent">SocialHub
+        </h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <button
+          class="theme-toggle-btn w-9 h-9 rounded-lg border border-border text-txt-secondary flex items-center justify-center hover:bg-surface-hover transition-all active:scale-90">
+          <span class="theme-icon-light hidden text-lg">☀️</span>
+          <span class="theme-icon-dark text-lg">🌙</span>
         </button>
-        <button id="create-post-btn" class="px-5 py-2 bg-secondary text-white rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-semibold">
-          ✍️ New Post
+        <span id="nav-user-name" class="text-sm font-medium text-txt-secondary"></span>
+        <button id="logout-btn"
+          class="px-4 py-2 border border-border rounded-lg text-txt-secondary text-[13px] hover:border-red-400 hover:text-red-400 hover:bg-red-400/10 transition-all">Sign
+          Out</button>
+      </div>
+    </header>
+
+    <!-- Layout -->
+    <div class="flex max-w-[1200px] mx-auto px-8 py-6 gap-7">
+      <!-- Feed -->
+      <main class="flex-1 min-w-0 flex flex-col gap-5">
+        <!-- Create Post -->
+        <div class="bg-surface border border-border rounded-xl p-5">
+          <div class="flex items-center gap-3">
+            <div id="create-post-avatar"
+              class="w-11 h-11 rounded-full bg-gradient-to-br from-brand to-accent flex items-center justify-center text-lg font-bold text-white shrink-0">
+              ?</div>
+            <button id="open-post-modal-btn"
+              class="flex-1 px-5 py-3 bg-surface-input border border-border rounded-full text-txt-muted text-sm text-left hover:border-brand hover:bg-surface-hover transition cursor-pointer">What's
+              on your mind?</button>
+          </div>
+        </div>
+
+        <!-- Posts -->
+        <div id="posts-feed" class="flex flex-col gap-5">
+          <div class="text-center text-txt-muted py-5">Loading posts...</div>
+        </div>
+      </main>
+
+      <!-- Sidebar -->
+      <aside class="w-[280px] shrink-0 hidden lg:block">
+        <div class="bg-surface border border-border rounded-xl p-5 sticky top-[88px]">
+          <h3 class="text-base font-bold mb-4">👥 Platform Users</h3>
+          <div id="users-sidebar-list" class="flex flex-col gap-2 max-h-[65vh] overflow-y-auto">
+            <div class="text-center text-txt-muted py-3 text-[13px]">Loading...</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ==================== CREATE POST MODAL ==================== -->
+  <div id="post-modal"
+    class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center anim-fade">
+    <div
+      class="bg-surface border border-border rounded-2xl p-8 w-full max-w-[480px] mx-4 shadow-[0_8px_40px_rgba(0,0,0,0.45)] anim-slide-up">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold">Create Post</h2>
+        <button
+          class="modal-close w-9 h-9 rounded-full bg-surface-input border border-border text-txt-secondary text-xl flex items-center justify-center hover:bg-red-500 hover:text-white hover:border-red-500 transition"
+          data-close="post-modal">&times;</button>
+      </div>
+      <form id="post-form" class="flex flex-col gap-3.5">
+        <input type="text" id="post-title" placeholder="Post title" required
+          class="w-full px-4 py-3.5 bg-surface-input border border-border rounded-lg text-txt-primary text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 placeholder:text-txt-muted transition">
+        <textarea id="post-content" placeholder="What's on your mind?" rows="4" required
+          class="w-full px-4 py-3.5 bg-surface-input border border-border rounded-lg text-txt-primary text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 placeholder:text-txt-muted transition resize-none leading-relaxed"></textarea>
+        <button type="submit"
+          class="w-full py-3 bg-gradient-to-r from-brand to-brand-dark text-white rounded-lg font-semibold text-sm shadow-[0_4px_16px_rgba(108,92,231,0.3)] hover:-translate-y-0.5 hover:shadow-[0_6px_24px_rgba(108,92,231,0.45)] active:translate-y-0 transition-all">
+          Publish Post
         </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== POST DETAIL MODAL (BLUR BACKGROUND) ==================== -->
+  <div id="post-detail-modal"
+    class="hidden fixed inset-0 bg-surface-dark/80 backdrop-blur-md z-[250] flex items-center justify-center anim-fade p-4 md:p-8">
+    <div
+      class="bg-surface border border-border rounded-xl w-full max-w-2xl max-h-full flex flex-col shadow-[0_16px_60px_rgba(0,0,0,0.6)] anim-slide-up relative">
+      <button
+        class="absolute top-4 right-4 modal-close w-8 h-8 rounded-full bg-surface-input border border-border text-txt-secondary text-lg flex items-center justify-center hover:bg-red-500 hover:text-white hover:border-red-500 transition z-10"
+        data-close="post-detail-modal">&times;</button>
+      <div id="post-detail-content" class="overflow-y-auto w-full h-full p-6 pb-12 flex flex-col gap-5">
+        <!-- RENDERED POST HERE -->
       </div>
     </div>
-  </header>
+  </div>
 
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 pb-8">
-    <!-- Users Section -->
-    <section class="bg-white rounded-xl p-8 mb-8 shadow-xl">
-      <h2 class="text-2xl font-bold mb-6 text-primary">👥 Users</h2>
-      <div id="users-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        <div class="col-span-full text-center text-gray-400">Loading users...</div>
-      </div>
-    </section>
+  <!-- ==================== MULTI-CHAT CONTAINER ==================== -->
+  <div id="chat-container" class="fixed bottom-0 right-8 z-[300] flex items-end gap-4 pointer-events-none">
+    <!-- Chat boxes will be injected here -->
+  </div>
 
-    <!-- Posts Section -->
-    <section class="bg-white rounded-xl p-8 shadow-xl">
-      <h2 class="text-2xl font-bold mb-6 text-primary">📝 Posts & Comments</h2>
-      <div id="posts-list" class="flex flex-col gap-5">
-        <div class="text-center text-gray-400">Loading posts...</div>
-      </div>
-    </section>
-
-    <!-- Create User Modal -->
-    <div id="user-modal" class="modal hidden fixed inset-0 bg-black/50 z-50 items-center justify-center">
-      <div class="bg-white rounded-xl p-8 w-full max-w-md relative shadow-2xl">
-        <button class="close-modal absolute right-6 top-6 text-3xl text-gray-400 hover:text-gray-700 cursor-pointer">&times;</button>
-        <h2 class="text-2xl font-bold mb-6 text-primary">Create New User</h2>
-        <form id="user-form" class="flex flex-col gap-4">
-          <input type="text" id="user-name" placeholder="Full Name" required 
-                 class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
-          <input type="email" id="user-email" placeholder="Email Address" required 
-                 class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
-          <input type="password" id="user-password" placeholder="Password" required 
-                 class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
-          <button type="submit" class="px-5 py-3 bg-primary text-white rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-semibold">
-            Create User
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Create Post Modal -->
-    <div id="post-modal" class="modal hidden fixed inset-0 bg-black/50 z-50 items-center justify-center">
-      <div class="bg-white rounded-xl p-8 w-full max-w-md relative shadow-2xl">
-        <button class="close-modal absolute right-6 top-6 text-3xl text-gray-400 hover:text-gray-700 cursor-pointer">&times;</button>
-        <h2 class="text-2xl font-bold mb-6 text-primary">Create New Post</h2>
-        <form id="post-form" class="flex flex-col gap-4">
-          <input type="text" id="post-title" placeholder="Post Title" required 
-                 class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
-          <textarea id="post-content" placeholder="What's on your mind?" rows="4" required 
-                    class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none"></textarea>
-          <input type="text" id="post-userId" placeholder="Your User ID (or leave blank for anonymous)" 
-                 class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
-          <p class="text-xs text-gray-500">💡 Tip: Copy a User ID from the Users section above</p>
-          <button type="submit" class="px-5 py-3 bg-secondary text-white rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-semibold">
-            Create Post
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Create Comment Modal -->
-    <div id="comment-modal" class="modal hidden fixed inset-0 bg-black/50 z-50 items-center justify-center">
-      <div class="bg-white rounded-xl p-8 w-full max-w-md relative shadow-2xl">
-        <button class="close-modal absolute right-6 top-6 text-3xl text-gray-400 hover:text-gray-700 cursor-pointer">&times;</button>
-        <h2 class="text-2xl font-bold mb-6 text-primary">Add Comment</h2>
-        <form id="comment-form" class="flex flex-col gap-4">
-          <input type="hidden" id="comment-postId">
-          <textarea id="comment-text" placeholder="Write your comment..." rows="3" required 
-                    class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none"></textarea>
-          <input type="text" id="comment-userId" placeholder="Your User ID (or leave blank for anonymous)" 
-                 class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
-          <button type="submit" class="px-5 py-3 bg-primary text-white rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all font-semibold">
-            Post Comment
-          </button>
-        </form>
-      </div>
-    </div>
-  </main>
+  <!-- Notification Container -->
+  <div id="notification-container" class="fixed top-20 right-6 z-[500] flex flex-col gap-2"></div>
 
   <script src="app.js"></script>
 </body>
+
 </html>

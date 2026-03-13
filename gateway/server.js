@@ -92,6 +92,18 @@ app.use(createProxyMiddleware({
   }
 }));
 
+// 5. Proxy vers Chat Service
+app.use(createProxyMiddleware({
+  pathFilter: '/api/chat',
+  target: process.env.CHAT_SERVICE_URL || 'http://localhost:5003',
+  changeOrigin: true,
+  pathRewrite: { '^/api/chat': '/' },
+  onError: (err, req, res) => {
+    console.error('[!] Chat Service Proxy Error:', err.message);
+    res.status(503).json({ error: 'Chat Service unavailable' });
+  }
+}));
+
 // ---------------------------------------------------------
 // LANCEMENT DU SERVEUR
 // ---------------------------------------------------------

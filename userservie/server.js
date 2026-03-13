@@ -39,7 +39,7 @@ const connectDB = async () => {
     console.log('✅ MongoDB User connected');
   } catch (err) {
     console.log('❌ MongoDB User error:', err.message);
-    console.log('👉 TIP: Ensure your IP (196.203.130.3) is whitelisted in MongoDB Atlas: https://cloud.mongodb.com/');
+    console.log('👉 TIP: Ensure your IP (197.240.87.202) is whitelisted in MongoDB Atlas: https://cloud.mongodb.com/');
     setTimeout(connectDB, 10000);
   }
 };

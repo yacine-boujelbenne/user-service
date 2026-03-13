@@ -11,6 +11,8 @@ const postSchema = new mongoose.Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
   userId: { type: String, required: true },
+  userName: { type: String, default: 'Anonymous' },
+  likes: [{ type: String }], // Array of userIds who liked
   createdAt: { type: Date, default: Date.now }
 });
 
@@ -57,6 +59,38 @@ router.post('/', async (req, res) => {
   } catch (error) {
     console.error('Error creating post:', error);
     res.status(500).json({ error: 'Failed to create post', details: error.message });
+  }
+});
+
+// =========================
+// PUT /posts/:id/like → toggle like on a post
+// =========================
+router.put('/:id/like', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ error: 'userId is required' });
+    }
+
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    const index = post.likes.indexOf(userId);
+    if (index === -1) {
+      // Add like
+      post.likes.push(userId);
+    } else {
+      // Remove like (unlike)
+      post.likes.splice(index, 1);
+    }
+
+    await post.save();
+    res.json(post);
+  } catch (error) {
+    console.error('Error toggling like:', error);
+    res.status(500).json({ error: 'Failed to toggle like', details: error.message });
   }
 });
 

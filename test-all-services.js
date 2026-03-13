@@ -4,7 +4,7 @@ const http = require('http');
 const USER_SERVICE_PORT = 5000;
 const POST_SERVICE_PORT = 5001;
 const COMMENT_SERVICE_PORT = 5002;
-const GATEWAY_PORT = 6000;
+const GATEWAY_PORT = 4000;
 
 // Color codes for console output
 const colors = {
