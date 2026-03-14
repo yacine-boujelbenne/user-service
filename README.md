@@ -1,51 +1,54 @@
-# Microservices Architecture - Quick Start Guide
+# SocialHub - Modular Monolith
 
-## 🚀 Start All Services
+## Overview
 
-Run these commands in **4 separate terminals**:
+This project now uses a modular monolith architecture.
+The backend runs as a single application with internal modules:
 
-```bash
-# Terminal 1: User Service (Port 5000)
-cd user-service
-node server.js
+- `auth`
+- `users`
+- `posts`
+- `comments`
+- `chat`
 
-# Terminal 2: Post Service (Port 5001)
-cd user-service/post-service
-node server.js
+## Run the Project
 
-# Terminal 3: Comment Service (Port 5002)
-cd user-service/comment-service
-node server.js
+Use the launcher from the repository root:
 
-# Terminal 4: API Gateway (Port 3000)
-cd user-service/gateway
-node server.js
+```bat
+FINAL_START.bat
 ```
 
-## 🌐 Open Frontend
+This starts:
 
-Open `user-service/frontend/index.html` in your browser.
+- MongoDB on `27017` (if not already running)
+- Modular monolith API on `4000`
+- Frontend on `8081`
 
-## ✅ Test the App
+## API Base URL
 
-1. **Register** a new user
-2. **Login** with your credentials
-3. **Create a post**
-4. View users and posts with comments
+`http://127.0.0.1:4000`
 
-## 📡 API Endpoints
+## Main Endpoints
 
-All requests go through the Gateway at `http://localhost:3000/api`
+- `GET /health`
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/users`
+- `GET /api/posts`
+- `POST /api/posts`
+- `GET /api/comments/post/:postId`
+- `POST /api/comments`
+- `POST /api/chat`
+- `GET /api/chat/:userId1/:userId2`
 
-- `POST /api/auth/register` - Register
-- `POST /api/auth/login` - Login
-- `GET /api/users` - Get users
-- `GET /api/posts` - Get posts
-- `POST /api/posts` - Create post (JWT required)
-- `GET /api/comments/post/:postId` - Get comments
-- `POST /api/comments` - Create comment
+## Frontend
 
-## 🔑 JWT Authentication
+Open:
+
+`http://127.0.0.1:8081`
+
+## JWT Authentication
 
 Include token in headers:
 
